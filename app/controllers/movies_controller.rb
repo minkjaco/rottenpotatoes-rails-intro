@@ -11,6 +11,10 @@ class MoviesController < ApplicationController
   end
 
   def index
+    @ratings = Movie.distinct.pluck(:rating).sort
+    puts @ratings
+
+
     @sort_type = params['sort_type']
     @movies = Movie.order(@sort_type)
   end
