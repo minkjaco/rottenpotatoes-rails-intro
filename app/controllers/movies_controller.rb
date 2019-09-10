@@ -12,10 +12,21 @@ class MoviesController < ApplicationController
 
   def index
     @all_ratings = Movie.distinct.pluck(:rating).sort
-    @ratings = params.key?("ratings") ? params["ratings"] : ratings_true
-    @sort_type = params.key?('sort_type') ? params['sort_type'] : @sort_type
     
-    @movies = Movie.order(@sort_type).where(:rating => @ratings.map { |k, v| k if v == "1" }.to_a)
+    @sort_type = params["sort_type"] || session[:title]
+    session[:title] = @sort_type
+    
+    @ratings = params["ratings"] || session[:ratings]
+    session[:ratings] = @ratings
+
+    puts "sort_type: #{@sort_type}"
+    puts "ratings: #{@ratings}"
+    puts "params[\"ratings\"]: #{params["ratings"]}"
+   
+    @movies = Movie.order(@sort_type)
+    unless @ratings.nil?
+      @movies = @movies.where(:rating => @ratings.map { |k, v| k if v == "1" }.to_a)
+    end
   end
 
   def new
@@ -46,6 +57,11 @@ class MoviesController < ApplicationController
     redirect_to movies_path
   end
 
+  def clear_session
+    session.clear
+    redirect_to movies_path
+  end
+
   private
 
   helper_method :sort_this
@@ -53,11 +69,4 @@ class MoviesController < ApplicationController
     @sort_type == col ? 'hilite' : nil
   end
 
-  def ratings_true
-    d = { }
-    @all_ratings.each do |r|
-      d[r] = "1"
-    end
-    d
-  end
 end

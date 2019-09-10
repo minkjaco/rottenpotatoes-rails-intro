@@ -2,7 +2,6 @@
 %h2 All Movies
 
 = form_tag(movies_path, :method => 'get', :id => 'ratings_form') do
-  = hidden_field_tag(:sort_type, @sort_type)
   %table
     %tbody
       %tr
@@ -11,7 +10,7 @@
           %td
         - @all_ratings.each do |r|
           = hidden_field_tag("ratings[#{r}]", "0", :id => "ratings_#{r}")
-          %td= check_box_tag("ratings[#{r}]", "1", @ratings[r] == "1", :id => "ratings_#{r}")
+          %td= check_box_tag("ratings[#{r}]", "1", @ratings.nil? || @ratings[r] == "1", :id => "ratings_#{r}")
           %td= r
           - 10.times do 
             %td
@@ -35,3 +34,5 @@
         %td= link_to "More about #{movie.title}", movie_path(movie)
 
 = link_to 'Add new movie', new_movie_path
+<br/>
+= link_to 'New session', clear_session_movies_path
