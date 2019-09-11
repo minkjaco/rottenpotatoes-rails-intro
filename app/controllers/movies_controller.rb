@@ -10,18 +10,26 @@ class MoviesController < ApplicationController
     # will render app/views/movies/show.<extension> by default
   end
 
-  def index
-    @all_ratings = Movie.distinct.pluck(:rating).sort
-    
-    @sort_type = params["sort_type"] || session[:title]
-    session[:title] = @sort_type
-    
-    @ratings = params["ratings"] || session[:ratings]
-    session[:ratings] = @ratings
+  def index    
+    @all_ratings = all_ratings
 
-    puts "sort_type: #{@sort_type}"
-    puts "ratings: #{@ratings}"
-    puts "params[\"ratings\"]: #{params["ratings"]}"
+    params.each do |k, v|
+      puts "#{k}: #{v}"
+    end
+    puts session[:ratings]
+    puts session[:sort_type]
+    if (params["sort_type"].nil? || params["ratings"].nil?) && !session.empty?
+      @sort_type = params["sort_type"] || session[:sort_type] || ""
+      session[:sort_type] = @sort_type
+    
+      @ratings = params["ratings"] || session[:ratings] || Hash[ @all_ratings.collect { |r| [r, "1"] } ]
+      session[:ratings] = @ratings
+
+      redirect_to movies_path(:sort_type => session[:sort_type], :ratings => session[:ratings])
+    end
+
+    @sort_type = params["sort_type"]
+    @ratings = params["ratings"]
    
     @movies = Movie.order(@sort_type)
     unless @ratings.nil?
@@ -67,6 +75,10 @@ class MoviesController < ApplicationController
   helper_method :sort_this
   def sort_this(col)
     @sort_type == col ? 'hilite' : nil
+  end
+
+  def all_ratings
+    Movie.distinct.pluck(:rating).sort
   end
 
 end
