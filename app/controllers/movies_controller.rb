@@ -13,12 +13,7 @@ class MoviesController < ApplicationController
   def index    
     @all_ratings = all_ratings
 
-    params.each do |k, v|
-      puts "#{k}: #{v}"
-    end
-    puts session[:ratings]
-    puts session[:sort_type]
-    if (params["sort_type"].nil? || params["ratings"].nil?) && !session.empty?
+    if (params["sort_type"].nil? || params["ratings"].nil?)
       @sort_type = params["sort_type"] || session[:sort_type] || ""
       session[:sort_type] = @sort_type
     
