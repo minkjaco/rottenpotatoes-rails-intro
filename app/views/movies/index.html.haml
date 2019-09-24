@@ -9,6 +9,7 @@
         - 15.times do
           %td
         - @all_ratings.each do |r|
+          = hidden_field_tag("ratings[#{r}]", "0")
           %td= check_box_tag("ratings[#{r}]", "1", @ratings.nil? || @ratings[r] == "1", :id => "ratings_#{r}")
           %td= r
           - 10.times do 

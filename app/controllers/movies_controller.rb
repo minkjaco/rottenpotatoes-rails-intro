@@ -16,20 +16,28 @@ class MoviesController < ApplicationController
     if (params["sort_type"].nil? || params["ratings"].nil?)
       @sort_type = params["sort_type"] || session[:sort_type] || ""
       session[:sort_type] = @sort_type
-    
-      @ratings = params["ratings"] || session[:ratings] || Hash[ @all_ratings.collect { |r| [r, "1"] } ]
+
+      @ratings = params["ratings"] || session[:ratings] || all_ratings_hash
       session[:ratings] = @ratings
 
-      redirect_to movies_path(:sort_type => session[:sort_type], :ratings => session[:ratings])
+      redirect_to movies_path("sort_type" => @sort_type, "ratings" => @ratings)
+      return
     end
 
     @sort_type = params["sort_type"]
     @ratings = params["ratings"]
-   
+
+    if @ratings.values.collect { |v| v == "0" }.all?
+      @ratings = all_ratings_hash
+    end
+
+    puts "ratings: #{@ratings}"
+  
     @movies = Movie.order(@sort_type)
     unless @ratings.nil?
       @movies = @movies.where(:rating => @ratings.map { |k, v| k if v == "1" }.to_a)
     end
+
   end
 
   def new
@@ -74,6 +82,10 @@ class MoviesController < ApplicationController
 
   def all_ratings
     Movie.distinct.pluck(:rating).sort
+  end
+
+  def all_ratings_hash
+    Hash[ @all_ratings.collect { |r| [r, "1"] } ]
   end
 
 end
