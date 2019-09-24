@@ -30,8 +30,6 @@ class MoviesController < ApplicationController
     if @ratings.values.collect { |v| v == "0" }.all?
       @ratings = all_ratings_hash
     end
-
-    puts "ratings: #{@ratings}"
   
     @movies = Movie.order(@sort_type)
     unless @ratings.nil?
