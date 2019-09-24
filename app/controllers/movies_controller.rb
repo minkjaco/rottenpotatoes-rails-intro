@@ -66,11 +66,6 @@ class MoviesController < ApplicationController
     redirect_to movies_path
   end
 
-  def clear_session
-    session.clear
-    redirect_to movies_path
-  end
-
   private
 
   def all_ratings
