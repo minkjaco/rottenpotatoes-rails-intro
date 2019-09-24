@@ -73,11 +73,6 @@ class MoviesController < ApplicationController
 
   private
 
-  helper_method :sort_this
-  def sort_this(col)
-    @sort_type == col ? 'hilite' : nil
-  end
-
   def all_ratings
     Movie.distinct.pluck(:rating).sort
   end

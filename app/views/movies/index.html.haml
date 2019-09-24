@@ -21,9 +21,9 @@
 %table#movies
   %thead
     %tr
-      %th{ :class => sort_this('title') }= link_to("Movie Title", movies_path(:sort_type => 'title'), :id => 'title_header')
+      %th{ :class => @sort_type == 'title' ? 'hilite' : nil }= link_to("Movie Title", movies_path(:sort_type => 'title'), :id => 'title_header')
       %th Rating
-      %th{ :class => sort_this('release_date') }= link_to("Release Date", movies_path(:sort_type => 'release_date'), :id => 'release_date_header')
+      %th{ :class => @sort_type == 'release_date' ? 'hilite' : nil }= link_to("Release Date", movies_path(:sort_type => 'release_date'), :id => 'release_date_header')
       %th More Info
   %tbody
     - @movies.each do |movie|
