@@ -18,7 +18,7 @@
 
 <br />
 
-%table#movies
+%table#movies.table.table-striped.col-md-12
   %thead
     %tr
       %th{ :class => @sort_type == 'title' ? 'hilite' : nil }= link_to("Movie Title", movies_path(:sort_type => 'title'), :id => 'title_header')
