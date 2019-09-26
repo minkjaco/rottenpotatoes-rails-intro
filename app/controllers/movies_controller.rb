@@ -15,21 +15,21 @@ class MoviesController < ApplicationController
 
     if (params["sort_type"].nil? || params["ratings"].nil?)
       @sort_type = params["sort_type"] || session[:sort_type] || ""
-      session[:sort_type] = @sort_type
-
       @ratings = params["ratings"] || session[:ratings] || all_ratings_hash
-      session[:ratings] = @ratings
 
+      flash.keep
       redirect_to movies_path("sort_type" => @sort_type, "ratings" => @ratings)
       return
     end
 
     @sort_type = params["sort_type"]
-    @ratings = params["ratings"]
+    session[:sort_type] = @sort_type
 
+    @ratings = params["ratings"]
     if @ratings.values.collect { |v| v == "0" }.all?
-      @ratings = all_ratings_hash
+      @ratings = session[:ratings]
     end
+    session[:ratings] = @ratings
   
     @movies = Movie.order(@sort_type)
     unless @ratings.nil?
